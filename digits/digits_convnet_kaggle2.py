@@ -1,4 +1,3 @@
-from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.utils import np_utils
 from keras import models
@@ -54,34 +53,11 @@ x_train = x_train.astype('float32')
 x_test = x_test.reshape((28000, 28 ,28, 1))
 x_test = x_test.astype('float32')
 
-# define validation set
-x_val = x_train[:4200]
-partial_x_train = x_train[4200:]
-
-y_val = y_train[:4200]
-partial_y_train = y_train[4200:]
-
-
-# data augmentation
-datagen = ImageDataGenerator(
-	rotation_range=40,
-	width_shift_range=0.2,
-	height_shift_range=0.2,
-	shear_range=0.2,
-	zoom_range=0.2,
-	horizontal_flip=True,
-	fill_mode='nearest')
-
-train_generator = datagen.flow(partial_x_train, partial_y_train, batch_size=20)
 
 
 print("Learning...")
-# history = model.fit(x_train, y_train, epochs=30, batch_size=16, validation_split=0.1)
-history = model.fit_generator(
-	train_generator,
-	steps_per_epoch=len(partial_x_train) / 20,
-	epochs=30,
-	validation_data=(x_val, y_val))
+# history = model.fit(x_train, y_train, epochs=10, batch_size=16)
+history = model.fit(x_train, y_train, epochs=10, batch_size=16, validation_split=0.2)
 
 acc  = history.history['acc']
 val_acc = history.history['val_acc']
@@ -113,4 +89,4 @@ model.save('kaggle_aug_drop_1.h5')
 # def write_preds(preds, fname):
 #     pd.DataFrame({"ImageId": list(range(1,len(preds)+1)), "Label": preds}).to_csv(fname, index=False, header=True)
 
-# write_preds(preds, "predc-keras-convnet.csv")
+# write_preds(preds, "predc-keras-convnet3.csv")
